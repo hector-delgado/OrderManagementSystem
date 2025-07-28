@@ -8,6 +8,8 @@ using ProductService.Data.Repositories.Interfaces;
 using ProductService.Services;
 using ProductService.Services.Implementation;
 using ProductService.RabbitMQ.Implementation;
+using Serilog;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +36,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
 builder.Services.AddScoped<IProductsService, ProductsService>();
 builder.Services.AddHostedService<RabbitMqStockCheckConsumer>();
+
 builder.Services.AddDbContext<ProductsContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -60,6 +63,21 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.MSSqlServer(
+        connectionString: builder.Configuration.GetConnectionString("LogConnectionString"),
+        sinkOptions: new Serilog.Sinks.MSSqlServer.MSSqlServerSinkOptions { TableName = "Logs", AutoCreateSqlTable = false }
+    )
+    .Filter.ByIncludingOnly(logEvent =>
+        logEvent.Properties.TryGetValue("SourceContext", out var sourceContext) &&
+        sourceContext.ToString().Contains("ProductService")
+    )
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+Serilog.Debugging.SelfLog.Enable(msg => Debug.WriteLine(msg));
+
 
 var app = builder.Build();
 
