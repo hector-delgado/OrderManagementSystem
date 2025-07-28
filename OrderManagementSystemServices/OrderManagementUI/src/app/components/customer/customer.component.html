@@ -1,0 +1,56 @@
+<div class="container">
+  <h2>Create Customer</h2>
+  
+  <form [formGroup]="customerForm" (ngSubmit)="onSubmit()" class="customer-form">
+    <div class="form-group">
+      <label for="firstName">First Name:</label>
+      <input type="text" id="firstName" formControlName="firstName" class="form-control">
+      <div *ngIf="customerForm.get('firstName')?.invalid && customerForm.get('firstName')?.touched" class="error-message">
+        First Name is required
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="lastName">Last Name:</label>
+      <input type="tel" id="lastName" formControlName="lastName" class="form-control">
+      <div *ngIf="customerForm.get('lastName')?.invalid && customerForm.get('lastName')?.touched" class="error-message">
+        Last Name is required
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" id="email" formControlName="email" class="form-control">
+      <div *ngIf="customerForm.get('email')?.invalid && customerForm.get('email')?.touched" class="error-message">
+        Please enter a valid email
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button type="submit" [disabled]="!customerForm.valid" class="btn btn-primary">
+        Create
+      </button>
+      <button type="button" (click)="resetForm()" class="btn btn-secondary">
+        Reset
+      </button>
+    </div>
+  </form>
+
+  <h3>Customers List</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let customer of customers">
+        <td>{{ customer.id }}</td>
+        <td>{{ customer.firstName }}</td>
+        <td>{{ customer.lastName }}</td>
+        <td>{{ customer.email }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div> 

@@ -1,0 +1,13 @@
+<nav class="navbar">
+  <div class="container">
+    <h1 class="navbar-brand">Order Management System</h1>
+    <ul class="nav-links">
+      <li><a routerLink="/orders" routerLinkActive="active">Orders</a></li>
+      <li><a routerLink="/products" routerLinkActive="active">Products</a></li>
+      <li><a routerLink="/customers" routerLinkActive="active">Customers</a></li>
+      <li><button class="btn btn-outline-light" (click)="logout()">Logout</button></li>
+    </ul>
+  </div>
+</nav>
+
+<router-outlet></router-outlet>
