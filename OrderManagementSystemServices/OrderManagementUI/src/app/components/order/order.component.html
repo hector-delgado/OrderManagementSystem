@@ -1,0 +1,76 @@
+<div class="container">
+  <h2>Create Order</h2>
+  
+  <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="order-form">
+    <div class="form-group">
+      <label for="customerId">Customer:</label>
+      <select id="customerId" formControlName="customerId" class="form-control">
+        <option value="">Select a customer</option>
+        <option *ngFor="let customer of customers" [value]="customer.id">
+          {{ customer.firstName }} {{ customer.lastName }} - {{ customer.email }}
+        </option>
+      </select>
+      <div *ngIf="orderForm.get('customerId')?.invalid && orderForm.get('customerId')?.touched" class="error-message">
+        Please select a customer
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="productId">Product:</label>
+      <select id="productId" formControlName="productId" class="form-control">
+        <option value="">Select a product</option>
+        <option *ngFor="let product of products" [value]="product.id">
+          {{ product.name }} - ${{ product.price }}
+        </option>
+      </select>
+      <div *ngIf="orderForm.get('productId')?.invalid && orderForm.get('productId')?.touched" class="error-message">
+        Please select a product
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="quantity">Quantity:</label>
+      <input type="number" id="quantity" formControlName="quantity" class="form-control" min="1">
+      <div *ngIf="orderForm.get('quantity')?.invalid && orderForm.get('quantity')?.touched" class="error-message">
+        Please enter a valid quantity (minimum 1)
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button type="submit" [disabled]="!orderForm.valid" class="btn btn-primary">
+        Create Order
+      </button>
+      <button type="button" (click)="resetForm()" class="btn btn-secondary">
+        Reset
+      </button>
+    </div>
+  </form>
+
+  <h3>Orders List</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Customer</th>
+        <th>Product</th>
+        <th>Date</th>
+        <th>Total Amount</th>
+        <th>Quantity</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of orders">
+        <td>{{ order.id }}</td>
+        <td>{{ getCustomerName(order.customerId) }}</td>
+        <td>{{ getProductName(order.productId) }}</td>
+        <td>{{ order.orderDate | date }}</td>
+        <td>{{ order.totalAmount | currency }}</td>
+        <td>{{ order.quantity }}</td>
+        <td>
+          <button (click)="deleteOrder(order.id)" class="btn btn-sm btn-danger">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div> 

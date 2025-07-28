@@ -1,0 +1,108 @@
+services:
+  ##RABITMQ
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"     
+      - "15672:15672"   # Web UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq  # Persistent data
+
+  ##SQL SERVER
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+        - ACCEPT_EULA=Y
+        - MSSQL_SA_PASSWORD=localdbSys12
+    ports:
+        - "1433:1433"
+    volumes:
+        - sqlserver_data:/var/opt/mssql
+
+  ##IDENTITY SERVICE
+  identityservice-app:
+    build:
+      context: ./IdentityService
+      dockerfile: Dockerfile
+    environment:
+      JWT__Secret: 980C5E60-78FD-4517-B85B-1CD1FAE0D5A3
+      JWT__Issuer: http://localhost:8080
+      JWT__Audience: http://localhost:8080
+    ports:
+      - "8082:8080"
+
+  ##LOGGING SERVICE
+  loggingservice-app:
+    build:
+      context: ./LoggingService
+      dockerfile: Dockerfile
+    depends_on:
+      - rabbitmq
+    environment:
+      RabbitMQ__Host: rabbitmq
+      ConnectionStrings__LogConnectionString: Server=sqlserver,1433;Database=Logs;User Id=sa;Password=localdbSys12;TrustServerCertificate=True;MultipleActiveResultSets=true;Encrypt=False
+      JWT__Secret: 980C5E60-78FD-4517-B85B-1CD1FAE0D5A3
+      JWT__Issuer: http://localhost:8080
+      JWT__Audience: http://localhost:8080
+    ports:
+      - "8083:8080"
+
+  ##Customer SERVICE
+  customerservice-app:
+    build:
+      context: ./CustomerService
+      dockerfile: Dockerfile
+    environment:
+      ConnectionStrings__DefaultConnection: Server=sqlserver,1433;Database=CustomerServiceDB;User Id=sa;Password=localdbSys12;TrustServerCertificate=True;MultipleActiveResultSets=true;Encrypt=False
+      ConnectionStrings__LogConnectionString: Server=sqlserver,1433;Database=Logs;User Id=sa;Password=localdbSys12;TrustServerCertificate=True;MultipleActiveResultSets=true;Encrypt=False
+      JWT__Secret: 980C5E60-78FD-4517-B85B-1CD1FAE0D5A3
+      JWT__Issuer: http://localhost:8080
+      JWT__Audience: http://localhost:8080
+    ports:
+      - "8084:8080"
+
+
+  ##ORDER SERVICE
+  orderservice-app:
+    build:
+      context: ./OrderService
+      dockerfile: Dockerfile
+    depends_on:
+      - rabbitmq
+    environment:
+      RabbitMQ__Host: rabbitmq
+      ConnectionStrings__DefaultConnection: Server=sqlserver,1433;Database=OrderServiceDB;User Id=sa;Password=localdbSys12;TrustServerCertificate=True;MultipleActiveResultSets=true;Encrypt=False
+      ConnectionStrings__LogConnectionString: Server=sqlserver,1433;Database=Logs;User Id=sa;Password=localdbSys12;TrustServerCertificate=True;MultipleActiveResultSets=true;Encrypt=False
+      JWT__Secret: 980C5E60-78FD-4517-B85B-1CD1FAE0D5A3
+      JWT__Issuer: http://localhost:8080
+      JWT__Audience: http://localhost:8080
+    ports:
+      - "8085:8080"
+
+  ##PRODUCT SERVICE
+  productservice-app:
+    build:
+      context: ./ProductService
+      dockerfile: Dockerfile
+    depends_on:
+      - rabbitmq
+    environment:
+      RabbitMQ__Host: rabbitmq
+      ConnectionStrings__DefaultConnection: Server=sqlserver,1433;Database=ProductServiceDB;User Id=sa;Password=localdbSys12;TrustServerCertificate=True;MultipleActiveResultSets=true;Encrypt=False
+      ConnectionStrings__LogConnectionString: Server=sqlserver,1433;Database=Logs;User Id=sa;Password=localdbSys12;TrustServerCertificate=True;MultipleActiveResultSets=true;Encrypt=False
+      JWT__Secret: 980C5E60-78FD-4517-B85B-1CD1FAE0D5A3
+      JWT__Issuer: http://localhost:8080
+      JWT__Audience: http://localhost:8080
+    ports:
+      - "8086:8080"
+ 
+
+volumes:
+  sqlserver_data:
+    driver: local
+  rabbitmq_data:
+    driver: local
+  

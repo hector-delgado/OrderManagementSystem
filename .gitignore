@@ -52,3 +52,15 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+*.db
+/.vs/OrderManagementSystem/FileContentIndex/a8f9a36b-b973-4948-9ef8-04f169f2de31.vsidx
+*.wsuo
+*.json
+*.sqlite
+/OrderManagementSystemServices/.vs/OrderManagementSystemServices/copilot-chat/dd610e43/sessions
+/OrderManagementSystemServices/.vs/OrderManagementSystemServices/CopilotIndices/17.14.878.3237
+/OrderManagementSystemServices/.vs/OrderManagementSystemServices/FileContentIndex
+/OrderManagementSystemServices/.vs/OrderManagementSystemServices/DesignTimeBuild
+/OrderManagementSystemServices/.vs/OrderManagementSystemServices/v17
+/OrderManagementSystemServices/.vs/ProjectEvaluation
+/OrderManagementSystemServices/.vs/OrderManagementSystemServices/config/applicationhost.config
