@@ -11,9 +11,8 @@ export interface Product {
 
 export interface CreateProductDto {
   name: string;
-  description: string;
   price: number;
-  stockQuantity: number;
+  availableStock: number;
 }
 
 @Injectable({

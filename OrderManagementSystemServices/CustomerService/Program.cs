@@ -6,7 +6,6 @@ using CustomerService.Services.Implementation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using CustomerService.Data.Repositories;
 using Serilog;
 using System.Diagnostics;
 using System.Text;
