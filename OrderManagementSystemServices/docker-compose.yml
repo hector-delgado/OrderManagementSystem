@@ -101,9 +101,10 @@ services:
  
 ##ORDER MANAGEMENT UI
   ordermanagement-ui:
-    build:
+    #image: ordermanagement-ui
+    build:        
       context: ./OrderManagementUI
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile      
     container_name: ordermanagement-ui
     ports:
       - "51688:51688"
